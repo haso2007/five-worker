@@ -9,7 +9,7 @@
     * **Socks5**：导入后信息可能不完整，需手动补充配置。
     * Shadowsocks配置图示![Shadowsocks配置图示](Shadowsocks.jpg)
     * socks5配置图示![socks5配置图示](sock5.jpg)
-* **初始密码**：初次部署后访问 Worker/page 地址，会自动弹出设置密码的界面,用于生成动态UUID，TROJAN等密码，需设置KV，名称为KV,或者设置环境变量UUID。
+* **初始密码**：初次部署后访问 Worker/page 地址，会自动弹出设置密码的界面,用于生成动态UUID，TROJAN等密码，需设置KV，名称为KV,或者设置环境变量UUID或KEY。
 * **访问密码**：初次部署后访问 Worker/page 地址，编辑配置页面可以设置访问密码，用于保护节点配置信息不会被别人随意修改，需设置KV，或者设置环境变量ADMIN_PASS。
 ### 路径功能
 * `/Socks5`: 留空。
