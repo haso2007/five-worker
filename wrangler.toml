@@ -1,0 +1,14 @@
+name = "five-worker"
+main = "_worker.js"
+compatibility_date = "2025-12-04"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = ""
+
+[[kv_namespaces]]
+binding = "KV"
+id = "71340f31ab07441280e9225b9be4dadd"
+
+[vars]
+UUID = "a8f2c9e5-7b3d-4e61-9f8a-2c5d6b1e4a9f"
