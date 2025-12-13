@@ -1,0 +1,54 @@
+name: Upstream Sync
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync_latest_from_upstream:
+    name: Sync latest commits from upstream repo
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+
+      - name: Detect Upstream Info
+        id: detect
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO_INFO=$(gh repo view ${{ github.repository }} --json parent,defaultBranch)
+          
+          UPSTREAM_REPO=$(echo "$REPO_INFO" | jq -r '.parent.full_name')
+          UPSTREAM_BRANCH=$(echo "$REPO_INFO" | jq -r '.parent.default_branch')
+          TARGET_BRANCH=$(echo "$REPO_INFO" | jq -r '.default_branch')
+          
+          if [ "$UPSTREAM_REPO" = "null" ]; then
+            echo "Error: Not a fork."
+            exit 1
+          fi
+          
+          echo "upstream_repo=$UPSTREAM_REPO" >> $GITHUB_OUTPUT
+          echo "upstream_branch=$UPSTREAM_BRANCH" >> $GITHUB_OUTPUT
+          echo "target_branch=$TARGET_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Sync upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          upstream_sync_repo: ${{ steps.detect.outputs.upstream_repo }}
+          upstream_sync_branch: ${{ steps.detect.outputs.upstream_branch }}
+          target_sync_branch: ${{ steps.detect.outputs.target_branch }}
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          test_mode: false
+
+      - name: Sync check
+        if: failure()
+        run: |
+          exit 1
